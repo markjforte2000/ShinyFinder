@@ -1,0 +1,5 @@
+Red - Data
+White - 5v
+Black - GND
+Yellow - GND
+Green - 3.3v

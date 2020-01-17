@@ -1,0 +1,15 @@
+world -> battle_start
+
+
+battle_start -> battle_shiny | battle_start -> battle_normal
+
+battle_normal -> battle_run
+battle_run -> battle_end
+
+battle_shiny -> battle_catch | battle_shiny -> battle_end
+battle_catch -> battle_catch_success | battle_catch -> battle_catch_fail
+battle_catch_fail -> battle_shiny
+battle_catch_success -> battle_end_catch
+
+battle_end_catch -> world   
+battle_end -> world
