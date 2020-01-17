@@ -3,16 +3,11 @@ mss==4.0.3
 numpy==1.18.0
 opencv-contrib-python==4.1.2.30
 Pillow==6.2.1
-PyAutoGUI==0.9.48
-PyGetWindow==0.0.8
-PyMsgBox==1.0.7
 pynput==1.6.3
 pyperclip==1.7.0
-pypiwin32==223
 PyRect==0.1.4
 PyScreeze==0.1.25
 pyserial==3.4
 PyTweening==1.0.3
 pytz==2019.3
-pywin32==227
 six==1.13.0
