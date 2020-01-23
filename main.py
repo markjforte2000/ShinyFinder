@@ -23,8 +23,7 @@ def main():
 
     for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
-        # frame = frame.array  # get frame array
-        model.frame = frame
+        model.frame = frame.array
         model = processor.process(model)
 
         show(frame)
