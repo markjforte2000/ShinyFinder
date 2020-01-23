@@ -13,6 +13,7 @@ RESOLUTION = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 def main():
+    print('Starting Shiny Finder')
     stream = PiCamera()
     stream.resolution = RESOLUTION
     stream.framerate = 32
