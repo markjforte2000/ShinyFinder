@@ -5,11 +5,14 @@ import pytz
 
 from ..states import battle_start
 
+WHITE_THRESHOLD = 230
+
 
 def world_state(model):
-    white_threshold = 240
     # Check if battle begins
-    if np.average(model.frame) > white_threshold:
+    average_white = np.average(model.frame)
+    print(average_white)
+    if average_white > WHITE_THRESHOLD:
         print('Battle started at: {}'.format(datetime.now(pytz.timezone('America/New_York'))))
         model.num_battles += 1
         # return battle start state
