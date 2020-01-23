@@ -26,7 +26,7 @@ def main():
         model.frame = frame.array
         model = processor.process(model)
 
-        show(frame)
+        show(model)
 
         raw_capture.truncate(0)
 
