@@ -1,35 +1,39 @@
-import sys
-
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import cv2
+from time import sleep
 
 from src.model import Model
 from src.processor import Processor
 from src.display import show
 
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+RESOLUTION = (SCREEN_WIDTH, SCREEN_HEIGHT)
+
 
 def main():
-    print('Starting Shiny Finder')
-    filename = 'resources/test/shiny_test_1-1_cropped.mp4'
-    cap = cv2.VideoCapture(filename)
+    stream = PiCamera()
+    stream.resolution = RESOLUTION
+    stream.framerate = 32
+    raw_capture = PiRGBArray(stream, size=RESOLUTION)
 
-    if not cap.isOpened():
-        print("Error opening video file at " + filename)
-        sys.exit(0)
-
-    model = Model(None, 0, 0)
+    model = Model(None, 0, 0)  # init
     processor = Processor()
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        model.frame = frame
-        if not ret:
-            break
+    for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
+        # frame = frame.array  # get frame array
+        model.frame = frame
+        model = processor.process(model)
+
+        show(frame)
+
+        raw_capture.truncate(0)
+
+        # if the `q` key was pressed, break from the loop
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
-
-        model = processor.process(model)
-        show(model)
 
 
 if __name__ == '__main__':
