@@ -1,4 +1,4 @@
-from .world import world_state
+from .world_state import world_state
 
 
 def initial_state():

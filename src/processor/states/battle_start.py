@@ -13,18 +13,18 @@ SHINY_THRESHOLD = 4.0
 MESSAGE_POINT = (0.85, 0.9)
 
 
-def battle_start_state(model):
+def battle_start_state(model, logger):
     # compare message times if both set
     global first_message_time, second_message_time, no_message, SHINY_THRESHOLD, MESSAGE_POINT
     if first_message_time and second_message_time:
         # check if shiny
         delay = second_message_time - first_message_time
-        print("Time in between messages: {}".format(delay))
+        logger.debug("Time in between messages: {}".format(delay))
         first_message_time = None
         second_message_time = None
         no_message = True
         if delay > SHINY_THRESHOLD:
-            print("Shiny Found! - {}".format(datetime.now(pytz.timezone('America/New_York'))))
+            logger.info("Shiny Found!")
             model.num_shinies += 1
 
         # return main battle state

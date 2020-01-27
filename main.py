@@ -20,7 +20,7 @@ def main():
     raw_capture = PiRGBArray(stream, size=RESOLUTION)
 
     model = Model(None, 0, 0)  # init
-    processor = Processor()
+    processor = Processor(logger=logger)
 
     for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
