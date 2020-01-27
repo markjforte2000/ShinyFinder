@@ -28,7 +28,6 @@ class Controller(object):
         angle_radians = radians(angle)
         joystick_x = int(extension * sin(angle_radians)) + Reference.JOYSTICK_VALUE_NEUTRAL
         joystick_y = int(extension * cos(angle_radians)) + Reference.JOYSTICK_VALUE_NEUTRAL
-        # print('Converted angle {0} to (x,y) ({1},{2})'.format(angle, joystick_x, joystick_y))
         if joystick == Reference.JOYSTICK:
             self.manager.add_task(button=Reference.JOYSTICK_L_X, value=joystick_x)
             self.manager.add_task(button=Reference.JOYSTICK_L_Y, value=joystick_y)
