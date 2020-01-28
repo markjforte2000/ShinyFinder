@@ -28,6 +28,5 @@ def battle_run_state(model, logger, controller):
 def is_menu_up(frame, point):
     roi_size = 10  # (10x10)
     roi_values = frame[point[0] - roi_size: point[0] + roi_size, point[1] - roi_size: point[1] + roi_size].copy()
-    print(roi_values)
     # menu is up if average is exactly menu threshold
     return np.average(roi_values) == MENU__THRESHOLD

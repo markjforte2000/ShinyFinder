@@ -7,7 +7,7 @@ from src.model import Model
 from src.processor import Processor
 from src.display import show
 from src.logger import Logger
-from src.controller import Controller
+from src import controller
 
 
 SCREEN_WIDTH = 1280
@@ -24,10 +24,10 @@ def main():
     stream.framerate = 32
     raw_capture = PiRGBArray(stream, size=RESOLUTION)
 
-    controller = Controller(port="/dev/ttyAMA0")
+    cnt = controller.Controller(port="/dev/ttyAMA0")
 
     model = Model(None, 0, 0)  # init
-    processor = Processor(logger=logger, controller=controller)
+    processor = Processor(logger=logger, controller=cnt)
 
     for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
@@ -38,9 +38,14 @@ def main():
 
         raw_capture.truncate(0)
 
+        key = cv2.waitKey(25) & 0xFF
+
         # if the `q` key was pressed, break from the loop
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if key == ord('q'):
             break
+        if key == ord('a'):
+            cnt.press_button(button=controller.A)
+            logger.info("Pressed A", source="CONTROLLER")
 
 
 if __name__ == '__main__':
