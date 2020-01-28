@@ -3,6 +3,8 @@ import numpy as np
 import imutils
 import pytesseract
 import concurrent.futures
+import os
+
 
 from .menu_item import MenuItem
 from src import logger
@@ -17,9 +19,12 @@ def process_menu(frame):
         sorted from top to bottom
         with name of item and if it is selected
     """
-
+    # set tesseract max thread count to 4
+    os.environ['OMP_THREAD_LIMIT'] = '4'
+    logger.debug("Trying to find menu items", source=LOGGER_NAME)
     # get contours
     non_selected_contours, selected_contour = get_contours(frame)
+    logger.debug("Found menu items", source=LOGGER_NAME)
 
     all_contours = non_selected_contours.copy()
     all_contours.append(selected_contour)
@@ -28,32 +33,36 @@ def process_menu(frame):
     logger.debug("Sorting items", source=LOGGER_NAME)
     all_contours = sorted(all_contours, key=average_height)
 
+    # isolate text and combine to one image
+    logger.debug("Isolating Text", source=LOGGER_NAME)
+    # create all black mask
+    all_text = np.ones(frame.shape[:2], dtype="uint8") * 0
+    i = 0
+    selected_pos = 0  # keep track of for later
+    for contour in all_contours:
+        is_selected = contour is selected_contour
+        text = isolate_contour_text(frame, contour, is_selected)
+        # convert text to gray
+        text = cv2.cvtColor(text, cv2.COLOR_BGR2GRAY)
+        all_text = cv2.bitwise_or(all_text, text)
+        if is_selected:
+            selected_pos = i
+        i += 1
+
+    logger.debug("Begin processing text", source=LOGGER_NAME)
+
+    logger.debug("Done processing text", source=LOGGER_NAME)
+
+    logger.debug("Creating items", source=LOGGER_NAME)
     menu_items = []
-
-    logger.debug("Begin processing all items", source=LOGGER_NAME)
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        threads = []
-        pos = 0
-        # use new thread for each item to decrease text process time
-        for contour in all_contours:
-            is_selected = contour is selected_contour
-            # create new thread
-            thread = executor.submit(create_menu_item, frame=frame, contour=contour, pos=pos, is_selected=is_selected)
-            threads.append(thread)
-            pos += 1
-        # get all results
-        for thread in threads:
-            menu_items.append(thread.result())
-
-    logger.debug("Done processing all items", source=LOGGER_NAME)
+    pos = 0
+    text = get_text_from_contour(all_text)
 
     logger.debug("Menu Processor done", source=LOGGER_NAME)
     return menu_items
 
 
-def create_menu_item(frame, contour, pos, is_selected):
-    text = get_text_from_contour(frame, contour, is_selected)
+def create_menu_item(text, pos, is_selected):
     item = MenuItem(text, is_selected, pos)
     return item
 
@@ -67,12 +76,9 @@ def average_height(contour):
     return avg/n
 
 
-def get_text_from_contour(frame, contour, is_selected):
+def get_text_from_contour(text_image):
     """Returns string found in contour"""
-    text_image = isolate_contour_text(frame, contour, is_selected)
-    logger.debug("Tesseract processing text", source=LOGGER_NAME)
     text = pytesseract.image_to_string(text_image)
-    logger.debug("Tesseract done processing text", source=LOGGER_NAME)
     # replace é with e
     text = text.replace('é', 'e')
     logger.debug("Got text: {}".format(text), source=LOGGER_NAME)
@@ -81,7 +87,6 @@ def get_text_from_contour(frame, contour, is_selected):
 
 def isolate_contour_text(frame, contour, is_selected):
     """Returns all white image except for black text inside contour"""
-    logger.debug("Isolating text", source=LOGGER_NAME)
     # if area is not selected, invert frame
     if not is_selected:
         frame = cv2.bitwise_not(frame)
@@ -98,7 +103,6 @@ def isolate_contour_text(frame, contour, is_selected):
 
 def get_contours(frame):
     """Returns tuple (3 non-selected items, 1 Selected Item)"""
-    logger.debug("Trying to find menu items", source=LOGGER_NAME)
     # threshold for white and black
     lower_black = np.array([0, 0, 0], dtype=np.uint8)
     upper_black = np.array([10, 10, 10], dtype=np.uint8)
@@ -124,7 +128,5 @@ def get_contours(frame):
     # get largest selected contours
     selected_contours = sorted(selected_contours, key=cv2.contourArea)[-1:]
     selected_contour = selected_contours[0]
-
-    logger.debug("Found menu items", source=LOGGER_NAME)
 
     return non_selected_contours, selected_contour
