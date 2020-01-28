@@ -29,7 +29,7 @@ class Logger(object):
 
     def __log(self, log_type, data, source=None):
         now = datetime.now()
-        now = now.strftime("%m-%d-%Y %H:%M:%S")
+        now = now.strftime("%x %X.%f")
         if source is None:
             message = self.__default_format_no_source.format(now, log_type, data)
         else:
