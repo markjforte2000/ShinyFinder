@@ -18,7 +18,7 @@ def process_menu(frame):
         sorted from top to bottom
         with name of item and if it is selected
     """
-
+    os.environ['OMP_THREAD_LIMIT'] = '4'
     # get contours
     non_selected_contours, selected_contour = get_contours(frame)
 
@@ -33,8 +33,9 @@ def process_menu(frame):
 
     logger.debug("Begin processing all items", source=LOGGER_NAME)
 
+    threads = []
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        threads = []
+
         pos = 0
         # use new thread for each item to decrease text process time
         for contour in all_contours:
@@ -43,9 +44,9 @@ def process_menu(frame):
             thread = executor.submit(create_menu_item, frame=frame, contour=contour, pos=pos, is_selected=is_selected)
             threads.append(thread)
             pos += 1
-        # get all results
-        for thread in threads:
-            menu_items.append(thread.result())
+    # get all results
+    for thread in threads:
+        menu_items.append(thread.result())
 
     logger.debug("Done processing all items", source=LOGGER_NAME)
 
