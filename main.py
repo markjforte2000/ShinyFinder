@@ -6,6 +6,9 @@ from time import sleep
 from src.model import Model
 from src.processor import Processor
 from src.display import show
+from src.logger import Logger
+from src.controller import Controller
+
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -14,13 +17,17 @@ RESOLUTION = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 def main():
     print('Starting Shiny Finder')
+    logger = Logger()
+
     stream = PiCamera()
     stream.resolution = RESOLUTION
     stream.framerate = 32
     raw_capture = PiRGBArray(stream, size=RESOLUTION)
 
+    controller = Controller(port="/dev/ttyAMA0")
+
     model = Model(None, 0, 0)  # init
-    processor = Processor(logger=logger)
+    processor = Processor(logger=logger, controller=controller)
 
     for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
