@@ -5,7 +5,7 @@ from ..states import battle_start
 from ...controller.assistant.battle_controller import walk_in_circle
 from ... import controller as controller_ref
 
-WHITE_THRESHOLD = 230
+WHITE_THRESHOLD = 220
 
 
 def world_state(model, logger, controller):
