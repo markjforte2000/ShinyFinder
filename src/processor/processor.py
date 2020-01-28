@@ -1,5 +1,4 @@
 from .states import initial_state
-from ..controller import controller
 
 
 class Processor(object):
