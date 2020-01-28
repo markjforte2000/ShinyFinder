@@ -3,14 +3,18 @@ from ..states import battle_end_state
 
 import numpy as np
 
-MENU_POINT = (564, 325)
+MENU_POINT = (0.9, 0.9)
 MENU__THRESHOLD = 255
 
 
 def battle_run_state(model, logger, controller):
 
+    # create menu point
+    height, width = model.frame.shape[:2]
+    point = (int(MENU_POINT[0] * height), int(MENU_POINT[1] * width))
+
     # wait for menu to show up
-    if not is_menu_up(model.frame, MENU_POINT):
+    if not is_menu_up(model.frame, point):
         return battle_run_state
 
     # run from battle
