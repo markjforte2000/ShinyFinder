@@ -9,7 +9,7 @@ class Processor(object):
         self.logger = logger
 
     def process(self, model):
-        self.state = self.state(model, self.logger)
+        self.state = self.state(model, self.logger, self.controller)
         return model
 
 

@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 import pytz
 
-from ..states import main_battle
+from ..states import battle_run_state
 
 first_message_time = None
 second_message_time = None
@@ -14,7 +14,7 @@ MESSAGE_POINT = (0.85, 0.9)
 MESSAGE_THRESHOLD = 40.0
 
 
-def battle_start_state(model, logger):
+def battle_start_state(model, logger, controller):
     # compare message times if both set
     global first_message_time, second_message_time, no_message, SHINY_THRESHOLD, MESSAGE_POINT
     if first_message_time and second_message_time:
@@ -27,9 +27,11 @@ def battle_start_state(model, logger):
         if delay > SHINY_THRESHOLD:
             logger.info("Shiny Found!")
             model.num_shinies += 1
+            while True:
+                continue
 
         # return main battle state
-        return main_battle.main_battle_state
+        return battle_run_state.battle_run_state
 
     # create message point
     height, width = model.frame.shape[:2]

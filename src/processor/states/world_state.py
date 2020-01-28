@@ -8,7 +8,7 @@ from ..states import battle_start
 WHITE_THRESHOLD = 230
 
 
-def world_state(model, logger):
+def world_state(model, logger, controller):
     # Check if battle begins
     average_white = np.average(model.frame)
     if average_white > WHITE_THRESHOLD:
