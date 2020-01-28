@@ -19,6 +19,8 @@ def main():
     items = process_menu(image)
     end = time()
     print("Took {0} secs".format(end-start))
+    for item in items:
+        print(item.name)
 
     # cv2.imshow("image", image)
     # cv2.waitKey(0)

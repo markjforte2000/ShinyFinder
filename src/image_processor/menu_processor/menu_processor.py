@@ -95,7 +95,12 @@ def isolate_contour_text(frame, contour, is_selected):
     text = cv2.bitwise_and(frame, frame, mask=mask)
     # invert it
     text = cv2.bitwise_not(text)
-    return text
+    # crop to bounding box of contour
+    x1, y1, w, h = cv2.boundingRect(contour)
+    x2 = x1 + w
+    y2 = y1 + h
+    crop = text[y1:y2, x1:x2]
+    return crop
 
 
 def get_contours(frame):
