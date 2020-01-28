@@ -31,6 +31,8 @@ def main():
 
     for frame in stream.capture_continuous(raw_capture, format="bgr", use_video_port=True):
 
+        cnt.update()
+
         model.frame = frame.array
         model = processor.process(model)
 

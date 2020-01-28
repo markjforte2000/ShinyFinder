@@ -24,7 +24,7 @@ def update_controller(cont):
 
 
 def main():
-    cnt = controller.Controller(port='COM3')
+    cnt = controller.Controller(port='/dev/ttyAMA0')
     sleep(4)  # wait for arduino to reboot
 
     # separate thread to constantly update the controller
