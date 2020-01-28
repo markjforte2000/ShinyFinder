@@ -11,7 +11,7 @@ second_message_time = None
 no_message = True
 SHINY_THRESHOLD = 4.0
 MESSAGE_POINT = (0.85, 0.9)
-MESSAGE_THRESHOLD = 51.0
+MESSAGE_THRESHOLD = 40.0
 
 
 def battle_start_state(model, logger):
@@ -56,6 +56,5 @@ def battle_start_state(model, logger):
 def is_message_up(frame, point):
     roi_size = 10  # (10x10)
     roi_values = frame[point[0] - roi_size: point[0] + roi_size, point[1] - roi_size: point[1] + roi_size].copy()
-    print(roi_values)
-    # message is up if average is exactly 51
-    return np.average(roi_values) == 51.0
+    # message is up if average is exactly message threshold
+    return np.average(roi_values) == MESSAGE_THRESHOLD
