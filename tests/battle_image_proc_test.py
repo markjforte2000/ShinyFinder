@@ -1,14 +1,16 @@
-from src.image_processor import process_menu
+from src.image_processor.menu_processor import process_menu
 
 import cv2
 import pytesseract
 from time import time
-
+import platform
 
 
 def main():
 
-    pytesseract.pytesseract.tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+    if platform.system() is "Windows":
+        pytesseract.pytesseract.tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+
 
     filename = 'resources/test/pss_battle.jpg'
     image = cv2.imread(filename)

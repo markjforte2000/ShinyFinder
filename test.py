@@ -20,7 +20,7 @@ def main():
         sys.exit(0)
 
     model = Model(None, 0, 0)
-    processor = Processor()
+    processor = Processor(logger, None)
 
     while cap.isOpened():
         ret, frame = cap.read()

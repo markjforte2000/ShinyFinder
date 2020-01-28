@@ -1,4 +1,4 @@
-from src import controller
+from .src import controller
 
 from time import sleep
 import threading
